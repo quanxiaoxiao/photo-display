@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import { jsx, css } from '@emotion/core';
 import useColor from 'hooks/useColor';
 import Backdrop from 'components/Backdrop';
@@ -13,9 +14,16 @@ const Preview = React.memo(({
   onChange,
   index,
   total,
+  name,
 }) => {
   const bodyStyleSaved = useRef();
   const getColor = useColor();
+
+  const changeSaved = useRef(_.debounce((state, nextIndex) => {
+    if (nextIndex >= 0 && nextIndex < state.total) {
+      onChange(nextIndex);
+    }
+  }, 100));
 
   useEffect(() => {
     const bodyStyle = document.body.style;
@@ -33,16 +41,17 @@ const Preview = React.memo(({
   }, []);
 
   useEffect(() => {
-    const matchs = src.match(/\/([^/]+)$/);
-    if (matchs) {
-      document.title = matchs[1]; // eslint-disable-line
-    } else {
-      document.title = src;
-    }
+    document.title = name;
     return () => {
       document.title = '';
     };
-  }, [src]);
+  }, [name]);
+
+  const handleWheel = (ev) => {
+    changeSaved.current({
+      total,
+    }, ev.deltaY > 0 ? index + 1 : index - 1);
+  };
 
   const navStyle = css`
     position: absolute;
@@ -64,6 +73,7 @@ const Preview = React.memo(({
   return (
     <Backdrop
       onClick={() => onClose()}
+      onWheel={handleWheel}
     >
       <div
         onClick={(ev) => ev.stopPropagation()}
@@ -175,6 +185,7 @@ Preview.propTypes = {
   onChange: PropTypes.func.isRequired,
   total: PropTypes.number.isRequired,
   index: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 export default Preview;

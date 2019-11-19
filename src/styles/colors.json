@@ -1,6 +1,9 @@
 {
   "default": "#f00",
   "theme": "rgb(61, 117, 238)",
+  "other": {
+    "1": "#ccc"
+  },
   "fill": {
     "default": "#fff",
     "backdrop": "rgba(0, 0, 0, 0.8)",

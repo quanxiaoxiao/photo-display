@@ -1,3 +1,6 @@
+import _ from 'lodash';
+import pinyin from 'simple-pinyin';
+
 export const numberToFixed = (a = 0, size = 1) => parseFloat(Number(a).toFixed(size));
 
 export const deg2Radian = (degree) => degree * Math.PI / 180;
@@ -27,4 +30,26 @@ export const numberToSize = (num) => {
     return `${integer}.${digital.slice(0, 1)}${unit}`;
   }
   return `${integer}${unit}`;
+};
+
+export const isValueMatchStr = (value, str) => {
+  if (!_.isEqual(str.toUpperCase().indexOf(value.toUpperCase()), -1)) {
+    return true;
+  }
+  const _value = value.replace(/'/g, '');
+  if (_value.match(/^\w+$/)) { // 全部都是英文
+    return pinyin(str).join('')
+      .match(new RegExp(_value, 'i'));
+  }
+  const matches = _value.match(/^([^a-zA-Z]+)([a-zA-Z]+)$/);
+  if (matches) { // 中文和英文混合,必定要以中文为开始再复杂就不做匹配的考虑
+    const [, cnStr, enStr] = matches;
+    const cnIndex = str.indexOf(cnStr);
+    if (!_.isEqual(cnIndex, -1)) {
+      const restValue = str.substring(cnIndex + cnStr.length);
+      return pinyin(restValue).join('')
+        .match(new RegExp(`^${enStr}`));
+    }
+  }
+  return false;
 };
