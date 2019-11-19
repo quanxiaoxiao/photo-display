@@ -1,5 +1,5 @@
 const path = require('path'); // eslint-disable-line
-const photoView = require('./lib/photoView');
+const photoDisplay = require('./lib/photoDisplay');
 
 
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
     '/photo/view': {
       body: () => {
         const base = path.resolve(__dirname, 'files');
-        return photoView(base, '/file');
+        return photoDisplay(base, '/file');
       },
     },
   },
