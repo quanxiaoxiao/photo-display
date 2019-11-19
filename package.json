@@ -8,7 +8,7 @@
   },
   "keywords": [],
   "author": "quanxiaoxiao",
-  "main": "lib/photoView.js",
+  "main": "lib/photoDisplay.js",
   "devDependencies": {
     "@babel/core": "^7.7.2",
     "@babel/plugin-proposal-class-properties": "^7.7.0",
