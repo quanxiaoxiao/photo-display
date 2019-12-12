@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { hot } from 'react-hot-loader'; // eslint-disable-line
+import ResizeObserver from 'resize-observer-polyfill';
 
 import colorData from 'styles/colors.json';
 import sizeData from 'styles/sizes.json';
@@ -16,16 +17,22 @@ const View = React.memo(() => {
   const [sizes, setSizes] = useState(sizeData);
   const [fontSize, setFontSize] = useState(parseFloat(getComputedStyle(document.body).fontSize)); // eslint-disable-line
 
-  useEffect(() => {
-    window.addEventListener('resize', () => {
-      setFontSize(parseFloat(getComputedStyle(document.body).fontSize));
+  useLayoutEffect(() => {
+    let animationFrameID = null;
+    const observer = new ResizeObserver(() => {
+      const newFontSize = parseFloat(getComputedStyle(document.body).fontSize);
+      if (newFontSize !== fontSize) {
+        animationFrameID = window.requestAnimationFrame(() => {
+          setFontSize(newFontSize);
+        });
+      }
     });
-    setTimeout(() => {
-      const resizeEvent = window.document.createEvent('UIEvents');
-      resizeEvent.initUIEvent('resize', true, false, window, 0);
-      window.dispatchEvent(resizeEvent);
-    }, 60);
-  }, []);
+    observer.observe(document.body);
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(animationFrameID);
+    };
+  });
 
   return (
     <FontSizeContext.Provider

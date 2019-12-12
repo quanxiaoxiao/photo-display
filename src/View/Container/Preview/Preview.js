@@ -60,11 +60,13 @@ const Preview = React.memo(({
     height: 3rem;
     border-radius: 50%;
     outline: 0;
-    border-width: 0;
     transform: translateY(-50%);
     background: ${getColor('fill.nav')};
     transition: background 0.3s;
     user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     &:hover {
       background: ${getColor('fill.nav.active')};
     }
@@ -103,24 +105,29 @@ const Preview = React.memo(({
         onClick={(ev) => ev.stopPropagation()}
       >
         <Layout.Item>
-          <Icon
-            code="e600"
-            link
+          <a
             onClick={() => window.open(src, '__blank')}
-          />
+          >
+            <Icon
+              code="e600"
+              color={getColor('fill')}
+            />
+          </a>
         </Layout.Item>
         <Layout.Item>
-          <Icon
-            code="e602"
-            link
+          <a
             onClick={() => onClose()}
-          />
+          >
+            <Icon
+              code="e602"
+              color={getColor('fill')}
+            />
+          </a>
         </Layout.Item>
       </Layout>
       {
         index !== 0 && (
-          <button
-            type="button"
+          <a
             css={css`
               ${navStyle}
               left: 1rem;
@@ -134,20 +141,22 @@ const Preview = React.memo(({
               css={css`
                 width: 1.7rem;
                 height: 1.7rem;
+                display: block;
               `}
               code="e734"
+              color={getColor('fill')}
             />
-          </button>
+          </a>
         )
       }
       {
         index !== total - 1 && (
-          <button
-            type="button"
+          <a
             css={css`
               ${navStyle}
               right: 1rem;
             `}
+            color={getColor('fill')}
             onClick={(ev) => {
               ev.stopPropagation();
               onChange(index + 1);
@@ -157,10 +166,11 @@ const Preview = React.memo(({
               css={css`
                 width: 1.7rem;
                 height: 1.7rem;
+                display: block;
               `}
               code="e732"
             />
-          </button>
+          </a>
         )
       }
       <div
